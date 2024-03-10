@@ -70,14 +70,6 @@ class CryptoHelper:
                 return z
             z += 1
 
-    @staticmethod
-    def get_random_prime_number(number_length: int) -> int:
-        soloway = SolovayStrassenTest(number_length, 0.05)
-        while True:
-            n, a = soloway.start()
-            if sympy.isprime(n):
-                return n
-
 
 class GoldwasserMicali:
     def __init__(self, x: list, number_length: int):
@@ -90,14 +82,6 @@ class GoldwasserMicali:
     def __get_blum_integer(self):
         p = self.solovay_strassen.get_prime()
         q = self.solovay_strassen.get_prime()
-        # while True:
-        #     is_p_correct = p % 4 == 3
-        #     is_q_correct = q % 4 == 3
-        #     if not is_p_correct:
-        #         p = self.solovay_strassen.get_prime()
-        #     if not is_q_correct:
-        #         q = self.solovay_strassen.get_prime()
-        #     if is_p_correct and is_q_correct:
         return p * q, [p, q]
 
     def encrypt(self):
