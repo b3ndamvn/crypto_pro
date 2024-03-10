@@ -51,3 +51,75 @@ class SolovayStrassenTest:
             n, a = self.start()
             if sympy.isprime(n):
                 return n
+
+
+class CryptoHelper:
+    @staticmethod
+    def __get_number(number_length: int) -> int:
+        min_val = 2 ** (number_length - 1)
+        max_val = 2 ** number_length - 1
+        return random.randint(min_val, max_val)
+
+    @staticmethod
+    def get_random_number_from_set_pseudo_squares(p, q):
+        z = 2
+        while True:
+            z_p = sympy.jacobi_symbol(z, p)
+            z_q = sympy.jacobi_symbol(z, q)
+            if z_p == -1 and z_q == -1:
+                return z
+            z += 1
+
+    @staticmethod
+    def get_random_prime_number(number_length: int) -> int:
+        soloway = SolovayStrassenTest(number_length, 0.05)
+        while True:
+            n, a = soloway.start()
+            if sympy.isprime(n):
+                return n
+
+
+class GoldwasserMicali:
+    def __init__(self, x: list, number_length: int):
+        self.x = x
+        self.number_length = number_length
+        self.solovay_strassen = SolovayStrassenTest(number_length, 0.05)
+        self.blum_integer, self.p_and_q = self.__get_blum_integer()
+        self.z = CryptoHelper.get_random_number_from_set_pseudo_squares(self.p_and_q[0], self.p_and_q[1])
+
+    def __get_blum_integer(self):
+        p = self.solovay_strassen.get_prime()
+        q = self.solovay_strassen.get_prime()
+        # while True:
+        #     is_p_correct = p % 4 == 3
+        #     is_q_correct = q % 4 == 3
+        #     if not is_p_correct:
+        #         p = self.solovay_strassen.get_prime()
+        #     if not is_q_correct:
+        #         q = self.solovay_strassen.get_prime()
+        #     if is_p_correct and is_q_correct:
+        return p * q, [p, q]
+
+    def encrypt(self):
+        result = []
+        for num in self.x:
+            y = (pow(self.z, num) * pow(random.randrange(self.blum_integer), 2)) % self.blum_integer
+            result.append(y)
+        return result
+
+    def decrypt(self, encrypted_x: list, p: int):
+        result = []
+        for num in encrypted_x:
+            if sympy.jacobi_symbol(num, p) == -1:
+                result.append(1)
+            elif sympy.jacobi_symbol(num, p) == 1:
+                result.append(0)
+        return result
+
+
+if __name__ == '__main__':
+    gold_micali = GoldwasserMicali([1, 0, 1, 1, 0, 0], 1000)
+    a = gold_micali.encrypt()
+    print(a)
+    print(f'p = {gold_micali.p_and_q[0]}')
+    print(gold_micali.decrypt(a, gold_micali.p_and_q[0]))
