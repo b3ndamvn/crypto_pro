@@ -4,7 +4,7 @@ import sympy
 from sympy import Integer
 
 
-class SoloveyShtrassenTest:
+class SolovayStrassenTest:
     def __init__(self, bit_length, reliability_parameter):
         self.bit_length = bit_length
         self.reliability_parameter = reliability_parameter
