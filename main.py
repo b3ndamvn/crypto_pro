@@ -1,7 +1,6 @@
 import random
 import math
 import sympy
-from sympy import Integer
 
 
 class SolovayStrassenTest:
@@ -30,12 +29,12 @@ class SolovayStrassenTest:
         return res
 
     def start(self):
-        n = Integer(self.__calculate_n())
+        n = self.__calculate_n()
         if not n % 2:
             n += 1
         t = self.__calculate_t()
         for i in range(t):
-            a = Integer(self.__get_random_a(n))
+            a = self.__get_random_a(n)
             if math.gcd(a, n) > 1:
                 return n, f'{n} - составное'
             r = sympy.jacobi_symbol(a, n)
