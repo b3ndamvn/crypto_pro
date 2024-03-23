@@ -82,7 +82,13 @@ class GoldwasserMicali:
     def __get_blum_integer(self):
         p = self.solovay_strassen.get_prime()
         q = self.solovay_strassen.get_prime()
-        return p * q, [p, q]
+        while True:
+            if p % 4 != 3:
+                p = self.solovay_strassen.get_prime()
+            if q % 4 != 3:
+                q = self.solovay_strassen.get_prime()
+            if p % 4 == 3 and q % 4 == 3:
+                return p * q, [p, q]
 
     def encrypt(self):
         result = []
@@ -102,8 +108,7 @@ class GoldwasserMicali:
 
 
 if __name__ == '__main__':
-    gold_micali = GoldwasserMicali([1, 0, 1, 1, 0, 0], 1000)
+    gold_micali = GoldwasserMicali([1, 0, 1, 1, 0, 0], 16)
     a = gold_micali.encrypt()
     print(a)
-    print(f'p = {gold_micali.p_and_q[0]}')
     print(gold_micali.decrypt(a, gold_micali.p_and_q[0]))
